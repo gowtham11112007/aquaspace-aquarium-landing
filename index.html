@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Aquaspace — Fish Aquarium & Aquascape Service</title>
+  <meta name="description" content="The perfect solution for a peaceful and relaxing environment. Complete aquatic solutions, custom aquascaping, and maintenance." />
+  <meta name="theme-color" content="#00a8b5" />
+
+  <!-- Google Fonts: Oswald (Headlines) + Plus Jakarta Sans (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & AQUASPACE THEMEFOREST DESIGN SYSTEM
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-cyan: #00a8b5;
+      --primary-cyan-hover: #008f9b;
+      --gradient-btn: linear-gradient(135deg, #00a8b5 0%, #3ca05d 100%);
+      --gradient-btn-hover: linear-gradient(135deg, #008f9b 0%, #328c4e 100%);
+      --topo-green: #1da07f;
+      --topo-dark: #12755c;
+      --wave-blue: #23a0d6;
+
+      --text-dark: #1e293b;
+      --text-heading: #111827;
+      --text-gray: #64748b;
+      --text-light: #94a3b8;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --border-color: #e2e8f0;
+
+      --font-headline: 'Oswald', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+
+      --gutter: clamp(20px, 5vw, 80px);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      background-color: var(--bg-white);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-white);
+      color: var(--text-gray);
+      overflow-x: hidden;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-headline);
+      color: var(--text-heading);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Gradient Buttons with Shimmer Hover */
+    .btn-gradient {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 34px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-btn);
+      color: #ffffff !important;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 168, 181, 0.3);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-gradient::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn-gradient:hover::before {
+      left: 100%;
+    }
+
+    .btn-gradient:hover {
+      background: var(--gradient-btn-hover);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 168, 181, 0.5);
+    }
+
+    .btn-outline-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 32px;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: 2px solid #ffffff;
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-white:hover {
+      background: #ffffff;
+      color: var(--topo-dark) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Sub-taglines */
+    .sub-tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--primary-cyan);
+      margin-bottom: 12px;
+    }
+
+    .sub-tagline.white {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ==========================================================================
+       2. SCROLL ANIMATION SYSTEM (DYNAMIC FLOW & REVEAL EFFECTS)
+       ========================================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(45px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-left.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(50px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-right.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.92);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal-scale.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Stagger Delays */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* Floating micro animations */
+    @keyframes floatCard {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0); }
+    }
+
+    .float-anim {
+      animation: floatCard 5s ease-in-out infinite;
+    }
+
+    /* ==========================================================================
+       3. TOP NAVBAR (CLEAN WHITE WITH CYAN ACTIVE TAB + SCROLL SHADOW)
+       ========================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .site-header.scrolled {
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+      height: 72px;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      transition: height 0.3s ease;
+    }
+
+    .site-header.scrolled .nav-container {
+      height: 72px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #e6f7f8;
+      border: 2px solid var(--primary-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--primary-cyan);
+      transition: transform 0.3s ease;
+    }
+
+    .brand-logo:hover .brand-logo-icon {
+      transform: rotate(10deg) scale(1.05);
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-headline);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      letter-spacing: -0.02em;
+      text-transform: lowercase;
+    }
+
+    .main-nav {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      list-style: none;
+    }
+
+    .main-nav li {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .main-nav a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 22px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dark);
+      transition: color 0.25s, background 0.25s;
+      position: relative;
+    }
+
+    .main-nav a:hover {
+      color: var(--primary-cyan);
+    }
+
+    .main-nav a.active {
+      background: var(--primary-cyan);
+      color: #ffffff !important;
+    }
+
+    .header-phone-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius-full);
+      background: var(--gradient-btn);
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 15px rgba(0, 168, 181, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .header-phone-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 168, 181, 0.4);
+    }
+
+    /* ==========================================================================
+       4. HERO SECTION (CLOWNFISH & CORAL BACKGROUND + DYNAMIC HERO ANIMATION)
+       ========================================================================== */
+    .hero-banner {
+      position: relative;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      background: url('images/hero-marine.jpg') center center / cover no-repeat;
+      padding: 100px var(--gutter);
+      overflow: hidden;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(7, 26, 44, 0.84) 0%, rgba(7, 26, 44, 0.65) 50%, rgba(7, 26, 44, 0.25) 100%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 780px;
+    }
+
+    .hero-wave-icon {
+      font-size: 1.3rem;
+      letter-spacing: -3px;
+      color: var(--primary-cyan);
+      display: inline-block;
+      animation: waveFloat 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes waveFloat {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(6px); }
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5.2rem);
+      font-weight: 700;
+      color: #a5f3fc;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero-description {
+      font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 620px;
+    }
+
+    /* ==========================================================================
+       5. ABOUT SECTION (ROUNDED TANK + OVERLAPPING QUOTE CARD)
+       ========================================================================== */
+    .about-section {
+      padding: clamp(80px, 10vw, 130px) var(--gutter);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .about-grid {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .about-image-wrap {
+      position: relative;
+    }
+
+    .about-main-img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      transition: transform 0.5s ease;
+    }
+
+    .about-main-img:hover {
+      transform: scale(1.02);
+    }
+
+    .quote-overlay-card {
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 65%;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      border-left: 5px solid var(--primary-cyan);
+    }
+
+    .quote-icon {
+      font-size: 2.2rem;
+      color: var(--primary-cyan);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .quote-text {
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      line-height: 1.6;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .quote-author {
+      font-family: var(--font-headline);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: 0.05em;
+    }
+
+    .about-text-wrap h2 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      margin-bottom: 24px;
+    }
+
+    .about-cols-text {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 36px;
+      font-size: 0.95rem;
+      color: var(--text-gray);
+      line-height: 1.7;
+    }
+
+    /* ==========================================================================
+       6. COUNTER RIBBON (WAVY OCEAN RIBBON + FLOATING BUBBLES CANVAS)
+       ========================================================================== */
+    .counters-ribbon {
+      position: relative;
+      background: linear-gradient(180deg, #1ba5d6 0%, #1582aa 100%);
+      color: #ffffff;
+      padding: 70px var(--gutter);
+      overflow: hidden;
+    }
+
+    #bubbleCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .counters-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .counter-num {
+      font-family: var(--font-headline);
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .counter-label {
+      font-size: 1rem;
+      font-weight: 600;
+      opacity: 0.92;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ==========================================================================
+       7. OUR SERVICES & DYNAMIC ANIMATED PROGRESS BARS
+       ========================================================================== */
+    .services-section {
+      padding: clamp(80px, 10vw, 130px) var(--gutter);
+      background: #ffffff;
+    }
+
+    .services-container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .services-top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 60px;
+    }
+
+    .services-top-row h2 {
+      font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+    }
+
+    .skills-block {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .skill-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-headline);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      margin-bottom: 6px;
+    }
+
+    .skill-bar-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary-cyan);
+      border-radius: var(--radius-full);
+      transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .services-thumb-img {
+      border-radius: var(--radius-lg);
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      transition: transform 0.4s ease;
+    }
+
+    .services-thumb-img:hover {
+      transform: scale(1.03);
+    }
+
+    /* 5 Outlined Service Cards */
+    .services-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .service-card {
+      border: 1.5px solid var(--primary-cyan);
+      border-radius: var(--radius-md);
+      padding: 36px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: #ffffff;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 168, 181, 0.22);
+    }
+
+    /* Highlighted Middle Card from Template */
+    .service-card.highlighted {
+      background: linear-gradient(180deg, #5ec3c8 0%, #00a8b5 100%);
+      color: #ffffff;
+      border-color: #00a8b5;
+      box-shadow: 0 15px 35px rgba(0, 168, 181, 0.25);
+    }
+
+    .service-card.highlighted h4 {
+      color: #ffffff;
+    }
+
+    .service-card.highlighted p {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .service-card.highlighted .service-link {
+      color: #ffffff;
+    }
+
+    .service-icon-box {
+      font-size: 2.8rem;
+      color: var(--primary-cyan);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .service-icon-box {
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    .service-card.highlighted .service-icon-box {
+      color: #ffffff;
+    }
+
+    .service-card h4 {
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+    }
+
+    .service-card p {
+      font-size: 0.88rem;
+      color: var(--text-gray);
+      line-height: 1.55;
+      margin-bottom: 22px;
+      flex: 1;
+    }
+
+    .service-link {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary-cyan);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+      transition: gap 0.2s;
+    }
+
+    .service-link:hover {
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       8. TOPOGRAPHIC EXPERTS BANNER ("BUILDING THE AQUASCAPE CULTURE")
+       ========================================================================== */
+    .topo-banner-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 540px;
+      overflow: hidden;
+    }
+
+    .topo-left-panel {
+      background: var(--topo-green);
+      background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
+      background-size: 20px 20px;
+      padding: clamp(60px, 8vw, 100px) var(--gutter);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .topo-left-panel h2 {
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .topo-left-panel p {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 30px;
+      max-width: 540px;
+    }
+
+    .topo-checklist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+
+    .check-icon {
+      font-size: 1.1rem;
+      color: #ffffff;
+    }
+
+    .topo-right-image {
+      background: url('images/about-aquascape.jpg') center center / cover no-repeat;
+      min-height: 400px;
+      transition: transform 0.6s ease;
+    }
+
+    .topo-banner-section:hover .topo-right-image {
+      transform: scale(1.03);
+    }
+
+    /* ==========================================================================
+       9. HOW WE WORK (3-IMAGE COLLAGE + NUMBERED STEPS)
+       ========================================================================== */
+    .how-we-work-section {
+      padding: clamp(80px, 10vw, 130px) var(--gutter);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .how-we-work-grid {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .collage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .collage-img-1 {
+      height: 220px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      width: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    .collage-img-2 {
+      height: 220px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      width: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    .collage-img-3 {
+      grid-column: span 2;
+      height: 240px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      width: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    .collage-grid img:hover {
+      transform: scale(1.03);
+    }
+
+    .how-we-work-content h2 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      margin-bottom: 20px;
+    }
+
+    .how-we-work-content p {
+      margin-bottom: 36px;
+      font-size: 1rem;
+      color: var(--text-gray);
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    .step-row:hover {
+      transform: translateX(8px);
+    }
+
+    .step-number {
+      font-family: var(--font-headline);
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #84cc16; /* Aquaspace lime accent */
+      line-height: 0.9;
+    }
+
+    .step-text h4 {
+      font-size: 1.35rem;
+      margin-bottom: 6px;
+    }
+
+    .step-text p {
+      font-size: 0.92rem;
+      color: var(--text-gray);
+      margin-bottom: 0;
+    }
+
+    /* ==========================================================================
+       10. PRICING & CALL TO ACTION
+       ========================================================================== */
+    .pricing-cta-section {
+      background: var(--bg-light);
+      padding: clamp(80px, 10vw, 120px) var(--gutter);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .pricing-header-row {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .pricing-header-row h2 {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+    }
+
+    .pricing-header-right {
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    /* ==========================================================================
+       11. SHOWROOM LOCATION & CONTACT HUB
+       ========================================================================== */
+    .location-section {
+      padding: clamp(60px, 8vw, 100px) var(--gutter);
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .location-box-grid {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .location-details {
+      padding-right: 20px;
+    }
+
+    .location-details h3 {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+    }
+
+    .contact-item-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      font-size: 1.05rem;
+    }
+
+    .contact-item-line .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #e6f7f8;
+      color: var(--primary-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .contact-item-line:hover .icon {
+      transform: scale(1.1);
+    }
+
+    .map-embed-card {
+      height: 380px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #0b223f, #041021);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+      transition: transform 0.4s ease;
+    }
+
+    .map-embed-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .map-embed-card .pin {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      animation: pinBounce 2s infinite alternate;
+    }
+
+    @keyframes pinBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    /* Scroll To Top Button */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--gradient-btn);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 15px rgba(0, 168, 181, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .scroll-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-top-btn:hover {
+      transform: translateY(-4px);
+    }
+
+    /* ==========================================================================
+       12. FOOTER
+       ========================================================================== */
+    .site-footer {
+      background: #0d1b2a;
+      color: #ffffff;
+      padding: 80px var(--gutter) 36px;
+    }
+
+    .footer-grid {
+      max-width: 1320px;
+      margin: 0 auto 60px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 48px;
+    }
+
+    .footer-brand .brand-logo-text {
+      color: #ffffff;
+    }
+
+    .footer-brand p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-top: 16px;
+      max-width: 320px;
+    }
+
+    .footer-col h5 {
+      color: #ffffff;
+      font-size: 1.1rem;
+      margin-bottom: 22px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-col a {
+      color: #94a3b8;
+      font-size: 0.92rem;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+      color: var(--primary-cyan);
+    }
+
+    .footer-bottom-bar {
+      max-width: 1320px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      color: #64748b;
+    }
+
+    /* ==========================================================================
+       13. RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .services-top-row {
+        grid-template-columns: 1fr;
+      }
+      .services-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .topo-banner-section {
+        grid-template-columns: 1fr;
+      }
+      .how-we-work-grid {
+        grid-template-columns: 1fr;
+      }
+      .counters-inner {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .quote-overlay-card {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        margin-top: 20px;
+      }
+      .pricing-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      .location-box-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-nav {
+        display: none;
+      }
+      .services-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .counters-inner {
+        grid-template-columns: 1fr;
+      }
+      .about-cols-text {
+        grid-template-columns: 1fr;
+      }
+      .topo-checklist {
+        grid-template-columns: 1fr;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-bottom-bar {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. TOP NAVBAR (AQUASPACE BRANDING + PHONE GRADIENT PILL)
+       ========================================================================== -->
+  <header class="site-header" id="mainHeader">
+    <div class="nav-container">
+      <a href="#hero" class="brand-logo">
+        <div class="brand-logo-icon">🐠</div>
+        <div class="brand-logo-text">aquaspace</div>
+      </a>
+
+      <ul class="main-nav">
+        <li><a href="#hero" class="active">HOME</a></li>
+        <li><a href="#about">ABOUT US</a></li>
+        <li><a href="#services">SERVICES ▾</a></li>
+        <li><a href="#experts">GALLERY</a></li>
+        <li><a href="#location">CONTACT US</a></li>
+        <li><a href="#how-we-work">PAGES ▾</a></li>
+      </ul>
+
+      <a href="tel:+15552345678" class="header-phone-btn">
+        <span>📞 +1-555-234-5678</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       2. HERO SECTION (THE PERFECT SOLUTION FOR A PEACEFUL ENVIRONMENT)
+       ========================================================================== -->
+  <section class="hero-banner" id="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content reveal active">
+      <div class="sub-tagline white">
+        Welcome to Aquaspace <span class="hero-wave-icon">〰️〰️</span>
+      </div>
+      <h1 class="hero-title">
+        The Perfect Solution For A Peaceful And Relaxing Environment
+      </h1>
+      <p class="hero-description">
+        We provide complete aquarium installations, custom aquascaping, high-grade live fish, and comprehensive maintenance for residential and commercial spaces.
+      </p>
+      <a href="#about" class="btn-gradient">
+        Discover More
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. ABOUT SECTION (ROUNDED TANK + OVERLAPPING QUOTE CARD)
+       ========================================================================== -->
+  <section class="about-section" id="about">
+    <div class="about-grid">
+      <div class="about-image-wrap reveal-left">
+        <img src="images/hero-aquarium.jpg" alt="Beautiful fish tanks from around the world" class="about-main-img" />
+        
+        <!-- Overlapping Quote Card from Template -->
+        <div class="quote-overlay-card float-anim">
+          <div class="quote-icon">❝</div>
+          <div class="quote-text">
+            "There's nothing quite like a day at the aquarium. These are the peaceful moments we live for."
+          </div>
+          <div class="quote-author">
+            WILLIAM DESPRES — CEO/FOUNDER
+          </div>
+        </div>
+      </div>
+
+      <div class="about-text-wrap reveal-right">
+        <div class="sub-tagline">ABOUT AQUASPACE</div>
+        <h2>Discover the most beautiful fish tanks from around the world</h2>
+        
+        <div class="about-cols-text">
+          <div>
+            For over 15 years, our master aquarists have designed bespoke aquatic landscapes that bring serene nature directly into your living room and workplace.
+          </div>
+          <div>
+            Every tank is engineered with crystal low-iron glass, biological filtration, and healthy livestock quarantined to the highest standards.
+          </div>
+        </div>
+
+        <a href="#services" class="btn-gradient">
+          Discover More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. COUNTER RIBBON (WAVY OCEAN RIBBON + DYNAMIC NUMBER COUNTING)
+       ========================================================================== -->
+  <section class="counters-ribbon" id="counters">
+    <canvas id="bubbleCanvas"></canvas>
+    <div class="counters-inner">
+      <div class="reveal delay-1">
+        <div class="counter-num" data-target="75" data-suffix="+">0</div>
+        <div class="counter-label">Project Done</div>
+      </div>
+      <div class="reveal delay-2">
+        <div class="counter-num" data-target="30" data-suffix="">0</div>
+        <div class="counter-label">Professional Team</div>
+      </div>
+      <div class="reveal delay-3">
+        <div class="counter-num" data-target="15" data-suffix="+">0</div>
+        <div class="counter-label">Years of Experience</div>
+      </div>
+      <div class="reveal delay-4">
+        <div class="counter-num" data-target="97" data-suffix="%">0</div>
+        <div class="counter-label">Satisfied Client</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       5. OUR SERVICES & DYNAMIC ANIMATED PROGRESS BARS
+       ========================================================================== -->
+  <section class="services-section" id="services">
+    <div class="services-container">
+      <div class="services-top-row">
+        <div class="reveal-left">
+          <div class="sub-tagline">OUR SERVICES</div>
+          <h2>The most complete line of aquarium equipment</h2>
+        </div>
+
+        <div class="skills-block reveal delay-1">
+          <p style="font-size:0.92rem; color:var(--text-gray); margin-bottom:12px;">
+            Premium hardware, pristine water chemistry, and unmatched aquascaping craft.
+          </p>
+
+          <div>
+            <div class="skill-label-row">
+              <span>HIGH QUALITY MATERIAL</span>
+              <span>90%</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" data-width="90%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="skill-label-row">
+              <span>HEALTHY LIVESTOCK</span>
+              <span>85%</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" data-width="85%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="skill-label-row">
+              <span>PROFESSIONAL WORK</span>
+              <span>95%</span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" data-width="95%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal-right delay-2">
+          <img src="images/behance-hero.jpg" alt="Discus Fish and Aquascape" class="services-thumb-img" />
+        </div>
+      </div>
+
+      <!-- 5 Service Cards with Stagger Reveal -->
+      <div class="services-cards-grid">
+        <div class="service-card reveal delay-1">
+          <div class="service-icon-box">🏗️</div>
+          <h4>Design &amp; Install</h4>
+          <p>Custom glass aquarium planning, plumbing, and turnkey home installation.</p>
+          <a href="#location" class="service-link">Learn More ➔</a>
+        </div>
+
+        <div class="service-card reveal delay-2">
+          <div class="service-icon-box">🐟</div>
+          <h4>Fish Consultation</h4>
+          <p>Water parameter analysis, species compatibility, and medical care advice.</p>
+          <a href="#location" class="service-link">Learn More ➔</a>
+        </div>
+
+        <!-- Highlighted Card from Template -->
+        <div class="service-card highlighted reveal delay-3">
+          <div class="service-icon-box">🐠</div>
+          <h4>Supply Stock</h4>
+          <p>Exotic tropical fish, live corals, plants, and high-nutrition diets.</p>
+          <a href="#location" class="service-link">Learn More ➔</a>
+        </div>
+
+        <div class="service-card reveal delay-4">
+          <div class="service-icon-box">🪸</div>
+          <h4>Planted Tank</h4>
+          <p>Japanese Amano biotopes, driftwood layouts, and CO2 aquatic plant setups.</p>
+          <a href="#location" class="service-link">Learn More ➔</a>
+        </div>
+
+        <div class="service-card reveal delay-5">
+          <div class="service-icon-box">🛠️</div>
+          <h4>Maintenance</h4>
+          <p>Regular water changes, filter maintenance, glass cleaning, and health checks.</p>
+          <a href="#location" class="service-link">Learn More ➔</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       6. TOPOGRAPHIC EXPERTS BANNER ("BUILDING THE AQUASCAPE CULTURE")
+       ========================================================================== -->
+  <section class="topo-banner-section" id="experts">
+    <div class="topo-left-panel reveal-left">
+      <div class="sub-tagline white">WE ARE EXPERTS</div>
+      <h2>Building the aquascape culture</h2>
+      <p>
+        We combine natural biology and minimalist Japanese design principles to construct self-sustaining living works of art.
+      </p>
+
+      <div class="topo-checklist">
+        <div class="check-item"><span class="check-icon">✓</span> <span>Ultra-Clear Optiwhite Glass</span></div>
+        <div class="check-item"><span class="check-icon">✓</span> <span>Custom Hardscape Woods</span></div>
+        <div class="check-item"><span class="check-icon">✓</span> <span>Automated CO2 &amp; Lighting</span></div>
+        <div class="check-item"><span class="check-icon">✓</span> <span>Certified Biologists On-Site</span></div>
+      </div>
+
+      <div>
+        <a href="#how-we-work" class="btn-outline-white">
+          Discover More
+        </a>
+      </div>
+    </div>
+
+    <div class="topo-right-image reveal-right"></div>
+  </section>
+
+  <!-- ==========================================================================
+       7. HOW WE WORK (3-IMAGE COLLAGE + NUMBERED STEPS)
+       ========================================================================== -->
+  <section class="how-we-work-section" id="how-we-work">
+    <div class="how-we-work-grid">
+      <!-- 3-Image Collage with Scale Reveal -->
+      <div class="collage-grid reveal-scale">
+        <img src="images/offer-fish.jpg" alt="Aquarium corals" class="collage-img-1" />
+        <img src="images/planted-nature.jpg" alt="Moss and stones" class="collage-img-2" />
+        <img src="images/behance-hero.jpg" alt="Tropical fish swimming" class="collage-img-3" />
+      </div>
+
+      <!-- Right Steps Content with Left-Shift Reveal -->
+      <div class="how-we-work-content reveal-right">
+        <div class="sub-tagline">HOW WE WORK</div>
+        <h2>We supply complete aquatic solutions</h2>
+        <p>
+          Our streamlined 3-step execution ensures hassle-free delivery from first concept to a thriving ecosystem in your home.
+        </p>
+
+        <div class="steps-list">
+          <div class="step-row reveal delay-1">
+            <div class="step-number">01</div>
+            <div class="step-text">
+              <h4>Concept Planning</h4>
+              <p>Site inspection, space dimensioning, lighting requirements, and species selection.</p>
+            </div>
+          </div>
+
+          <div class="step-row reveal delay-2">
+            <div class="step-number">02</div>
+            <div class="step-text">
+              <h4>Material Preparation</h4>
+              <p>Hand-picking stone hardscapes, curing driftwood, and conditioning beneficial bacteria.</p>
+            </div>
+          </div>
+
+          <div class="step-row reveal delay-3">
+            <div class="step-number">03</div>
+            <div class="step-text">
+              <h4>Executing Project</h4>
+              <p>On-site plumbing, aquascaping layout, water filling, filtration cycling, and fish introduction.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. PRICING & CONTACT CTA
+       ========================================================================== -->
+  <section class="pricing-cta-section">
+    <div class="pricing-header-row reveal">
+      <div>
+        <div class="sub-tagline">PRICING PACKAGE</div>
+        <h2>Have a happy and healthy aquarium</h2>
+      </div>
+
+      <div class="pricing-header-right">
+        <p style="font-size:0.95rem; color:var(--text-gray);">
+          Flexible monthly maintenance packages, emergency call-outs, and turnkey custom build quotes tailored to your budget.
+        </p>
+        <a href="#location" class="btn-gradient">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       9. SHOWROOM LOCATION & CONTACT
+       ========================================================================== -->
+  <section class="location-section" id="location">
+    <div class="location-box-grid">
+      <div class="location-details reveal-left">
+        <div class="sub-tagline">VISIT OUR SHOWROOM</div>
+        <h3>Experience Aquaspace in Person</h3>
+        <p style="color:var(--text-gray); margin-bottom:28px;">
+          Over 60 display tanks, planted aquascapes, and full livestock quarantine showroom.
+        </p>
+
+        <div class="contact-item-line">
+          <div class="icon">📍</div>
+          <div><strong>124 Marine View Road</strong>, Coral Square, City Center</div>
+        </div>
+
+        <div class="contact-item-line">
+          <div class="icon">📞</div>
+          <div><strong>Call:</strong> <a href="tel:+15552345678" style="color:var(--primary-cyan); font-weight:700;">+1-555-234-5678</a></div>
+        </div>
+
+        <div class="contact-item-line">
+          <div class="icon">💬</div>
+          <div><strong>WhatsApp:</strong> <a href="https://wa.me/15552345678" target="_blank" style="color:var(--primary-cyan); font-weight:700;">Instant WhatsApp Chat</a></div>
+        </div>
+
+        <div class="contact-item-line">
+          <div class="icon">🕐</div>
+          <div><strong>Hours:</strong> Mon–Sat: 9am – 8pm | Sun: 10am – 6pm</div>
+        </div>
+
+        <div style="margin-top:28px;">
+          <a href="https://maps.google.com/?q=aquarium+and+pet+store" target="_blank" class="btn-gradient">
+            Get Directions →
+          </a>
+        </div>
+      </div>
+
+      <!-- Google Maps Card with Scale Reveal -->
+      <div class="map-embed-card reveal-right">
+        <div class="pin">📍</div>
+        <h4 style="font-size:1.6rem; color:#ffffff; margin-bottom:10px;">Aquaspace Flagship Store</h4>
+        <p style="color:#94a3b8; font-size:0.95rem; max-width:300px; margin-bottom:24px;">
+          Free customer parking, live coral frag testing, and dedicated loading dock.
+        </p>
+        <a href="https://maps.google.com/?q=aquarium+and+pet+store" target="_blank" class="btn-gradient">
+          Open in Google Maps
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       10. FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <div class="brand-logo-icon" style="background:#ffffff; color:#00a8b5;">🐠</div>
+          <div class="brand-logo-text" style="color:#ffffff;">aquaspace</div>
+        </div>
+        <p>
+          The perfect solution for a peaceful and relaxing environment. Complete aquatic installations, live corals, planted tanks, and pet care.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Our Services</a></li>
+          <li><a href="#how-we-work">How We Work</a></li>
+          <li><a href="#location">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#services">Design &amp; Install</a></li>
+          <li><a href="#services">Fish Consultation</a></li>
+          <li><a href="#services">Planted Tanks</a></li>
+          <li><a href="#services">Supply Stock</a></li>
+          <li><a href="#services">Maintenance</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contact Info</h5>
+        <ul>
+          <li><a href="tel:+15552345678">📞 +1-555-234-5678</a></li>
+          <li><a href="https://wa.me/15552345678">💬 WhatsApp Support</a></li>
+          <li><span style="color:#94a3b8;">124 Marine View Road, Coral Square</span></li>
+          <li><span style="color:#84cc16; font-weight:700;">● Open 7 Days a Week</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom-bar">
+      <div>© 2026 Aquaspace Aquarium &amp; Aquascape Service. All rights reserved.</div>
+      <div>Designed with precision for aquatic excellence.</div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-top-btn" id="scrollTopBtn" title="Scroll to top" aria-label="Scroll to top">
+    ↑
+  </button>
+
+  <!-- ==========================================================================
+       11. DYNAMIC SCROLL ANIMATIONS & INTERACTIVE JS ENGINE
+       ========================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Intersection Observer for Scroll Reveals
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach((el) => {
+        revealObserver.observe(el);
+      });
+
+      // 2. Animated Counter Numbers
+      const counterElements = document.querySelectorAll('.counter-num');
+      let countersAnimated = false;
+
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !countersAnimated) {
+            countersAnimated = true;
+            counterElements.forEach((el) => {
+              const target = parseInt(el.dataset.target, 10);
+              const suffix = el.dataset.suffix || '';
+              const duration = 1800;
+              const startTime = performance.now();
+
+              function updateNumber(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease Out Expo curve
+                const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const currentVal = Math.floor(easeProgress * target);
+
+                el.textContent = currentVal + suffix;
+
+                if (progress < 1) {
+                  requestAnimationFrame(updateNumber);
+                } else {
+                  el.textContent = target + suffix;
+                }
+              }
+
+              requestAnimationFrame(updateNumber);
+            });
+          }
+        });
+      }, { threshold: 0.3 });
+
+      const counterSection = document.getElementById('counters');
+      if (counterSection) counterObserver.observe(counterSection);
+
+      // 3. Animated Skill Progress Bars
+      const skillFills = document.querySelectorAll('.skill-bar-fill');
+      const skillObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            skillFills.forEach((bar) => {
+              bar.style.width = bar.dataset.width;
+            });
+          }
+        });
+      }, { threshold: 0.2 });
+
+      const servicesSection = document.getElementById('services');
+      if (servicesSection) skillObserver.observe(servicesSection);
+
+      // 4. Header Scroll State & Scroll-to-Top
+      const header = document.getElementById('mainHeader');
+      const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY > 40;
+        header.classList.toggle('scrolled', scrolled);
+        scrollTopBtn.classList.toggle('visible', window.scrollY > 350);
+      });
+
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // 5. Floating Ocean Bubbles in Counter Ribbon
+      const canvas = document.getElementById('bubbleCanvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let W, H;
+
+        function resizeCanvas() {
+          W = canvas.width = canvas.offsetWidth;
+          H = canvas.height = canvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class MicroBubble {
+          constructor() {
+            this.reset();
+            this.y = Math.random() * H;
+          }
+          reset() {
+            this.x = Math.random() * W;
+            this.y = H + 10;
+            this.r = 2 + Math.random() * 5;
+            this.speed = 0.5 + Math.random() * 1.2;
+            this.alpha = 0.15 + Math.random() * 0.35;
+            this.wobble = Math.random() * Math.PI * 2;
+          }
+          update() {
+            this.y -= this.speed;
+            this.wobble += 0.03;
+            this.x += Math.sin(this.wobble) * 0.8;
+            if (this.y < -15) this.reset();
+          }
+          draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        const bubbles = Array.from({ length: 30 }, () => new MicroBubble());
+
+        function loop() {
+          ctx.clearRect(0, 0, W, H);
+          bubbles.forEach((b) => {
+            b.update();
+            b.draw();
+          });
+          requestAnimationFrame(loop);
+        }
+        loop();
+      }
+    })();
+  </script>
+</body>
+</html>

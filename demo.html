@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Living Reef — Interactive Aquarium Experience</title>
+  <meta name="description" content="Dive into a living 3D underwater reef. Watch real fish swim, corals sway, and godrays dance." />
+  <meta name="theme-color" content="#06121f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --azure: #2a52d8; --azure-dark: #06121f; --aqua: #00d4e8;
+      --gutter: clamp(20px, 5vw, 80px);
+    }
+    html, body { height: 100%; overflow-x: hidden; background: var(--azure-dark); font-family: 'Sora', sans-serif; color: #fff; scroll-behavior: smooth; }
+
+    /* ── PRELOADER ── */
+    #preloader { position: fixed; inset: 0; z-index: 9999; background: #06121f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; transition: opacity .8s, visibility .8s; }
+    #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-fish { font-size: 2.5rem; animation: fishSwim 1.2s ease-in-out infinite alternate; }
+    @keyframes fishSwim { from { transform: translateX(-16px); } to { transform: translateX(16px); } }
+    .loader-bar-wrap { width: 220px; height: 6px; border-radius: 99px; background: rgba(255,255,255,.15); overflow: hidden; }
+    .loader-bar { height: 100%; background: var(--aqua); border-radius: 99px; width: 0%; transition: width .4s ease; }
+    .loader-label { font-size: .85rem; color: rgba(255,255,255,.7); letter-spacing: .05em; }
+
+    /* ── HEADER ── */
+    .site-header { position: fixed; inset-x: 0; top: 12px; z-index: 200; pointer-events: none; }
+    .site-header::before { content: ''; position: fixed; inset-x: 0; top: 0; height: 200px; background: linear-gradient(to bottom, rgba(6,18,31,.55) 0%, transparent 100%); pointer-events: none; }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 72px; }
+    .nav-logo { grid-column: 1; justify-self: start; pointer-events: all; font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .nav-pill { grid-column: 2; justify-self: center; pointer-events: all; display: flex; align-items: center; gap: 4px; padding: 6px 6px 6px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.1); backdrop-filter: blur(16px); }
+    .nav-pill a { padding: 8px 14px; border-radius: 999px; font-size: .875rem; font-weight: 500; color: rgba(255,255,255,.72); text-decoration: none; transition: color .2s; white-space: nowrap; }
+    .nav-pill a:hover { color: #fff; }
+    .nav-pill a.active { color: #fff; background: rgba(255,255,255,.15); }
+    .nav-cta { display: inline-flex !important; align-items: center; padding: 8px 22px !important; background: var(--azure) !important; color: #fff !important; font-weight: 600 !important; margin-left: 4px; transition: background .2s, transform .15s !important; }
+    .nav-cta:hover { background: #3a62e8 !important; transform: scale(1.03); }
+    .nav-right { grid-column: 3; justify-self: end; pointer-events: all; }
+    .btn-outline { display: inline-flex; align-items: center; padding: 8px 20px; border-radius: 999px; font-size: .875rem; font-weight: 500; border: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.9); text-decoration: none; background: transparent; cursor: pointer; transition: background .2s; }
+    .btn-outline:hover { background: rgba(255,255,255,.1); }
+    @media (max-width: 820px) { .nav-pill { display: none; } .nav-right { display: none; } }
+
+    /* ── STICKY HERO CANVAS ── */
+    .hero-canvas-wrap { position: sticky; top: 0; margin-bottom: -100svh; height: 100svh; overflow: hidden; }
+    #reefCanvas3d { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero-canvas-wrap::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(6,18,31,.38) 0%, rgba(6,18,31,.1) 55%, transparent 100%), linear-gradient(to top, rgba(6,18,31,.28) 0%, transparent 38%); pointer-events: none; z-index: 2; }
+
+    /* ── HERO COPY ── */
+    .hero-section { position: relative; isolation: isolate; display: flex; flex-direction: column; min-height: 100svh; overflow: hidden; }
+    .hero-copy { position: relative; z-index: 10; display: flex; flex-direction: column; flex: 1; justify-content: flex-end; padding: clamp(100px,20vw,140px) var(--gutter) clamp(80px,20svh,180px); }
+    .hero-eyebrow { font-size: clamp(.875rem,1.5vw,1rem); font-weight: 600; color: rgba(255,255,255,.9); margin-bottom: 16px; }
+    .hero-h1 { font-size: clamp(2.4rem,5.5vw,5.5rem); font-weight: 300; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 20px; text-wrap: balance; }
+    .hero-h1 strong { font-weight: 700; }
+    .hero-sub { font-size: clamp(.95rem,1.5vw,1.125rem); color: rgba(255,255,255,.78); max-width: 56ch; line-height: 1.6; margin-bottom: 36px; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 14px 36px; border-radius: 999px; font-size: 1.05rem; font-weight: 600; font-family: inherit; background: var(--azure); color: #fff; text-decoration: none; border: none; cursor: pointer; transition: background .2s, transform .15s, box-shadow .2s; box-shadow: 0 4px 24px rgba(42,82,216,.4); }
+    .btn-primary:hover { background: #3a62e8; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(42,82,216,.55); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 999px; font-size: 1rem; font-weight: 500; font-family: inherit; background: rgba(255,255,255,.1); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.25); cursor: pointer; backdrop-filter: blur(10px); transition: background .2s, transform .15s; }
+    .btn-ghost:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
+    .scroll-cue { position: absolute; bottom: clamp(24px,7svh,80px); left: 50%; transform: translateX(-50%); z-index: 10; color: rgba(255,255,255,.6); animation: scrollBob 2s ease-in-out infinite; cursor: pointer; background: none; border: none; }
+    .scroll-cue svg { width: 36px; height: auto; }
+    @keyframes scrollBob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+    .click-hint { position: absolute; bottom: clamp(28px,8svh,100px); right: clamp(20px,5vw,64px); z-index: 10; display: flex; align-items: center; gap: 8px; padding: 8px 16px 8px 12px; border-radius: 999px; background: rgba(255,255,255,.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.18); font-size: .8rem; color: rgba(255,255,255,.75); pointer-events: none; animation: fadeInUp 1s 2.5s both; }
+    .click-hint .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--aqua); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── WAVE ── */
+    .wave-divider { position: relative; width: 100%; overflow: hidden; height: 90px; }
+    .wave-divider svg { position: absolute; bottom: 0; left: -50%; width: 200%; height: 100%; animation: waveFlow 12s linear infinite; }
+    @keyframes waveFlow { from{transform:translateX(0)} to{transform:translateX(50%)} }
+
+    /* ── MARQUEE ── */
+    .marquee-section { background: var(--azure); padding: 64px 0; overflow: hidden; position: relative; }
+    .marquee-track { display: flex; gap: 16px; width: max-content; animation: mRight 40s linear infinite; }
+    .marquee-track.rev { animation-direction: reverse; animation-duration: 52s; margin-top: 20px; }
+    @keyframes mRight { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .mpill { display: inline-flex; align-items: center; padding: 10px 28px; border-radius: 999px; font-size: 1rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; color: #1a2a40; }
+    .pw{background:#fff} .pp{background:#c8e8f8} .pb{background:#f8c8e0} .pm{background:#fde68a} .pg{background:#a7f3d0}
+
+    /* ── SECTIONS ── */
+    .sec-white { background: #fff; color: #0f172a; }
+    .sec-dark { background: #06121f; color: #fff; }
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 var(--gutter); }
+    .sp { padding: 100px 0; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 32px; margin-top: 56px; }
+    .fcard { background: #f0f6ff; border-radius: 20px; padding: 36px 28px; transition: transform .25s, box-shadow .25s; }
+    .fcard:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(42,82,216,.12); }
+    .fcard-icon { font-size: 2.2rem; margin-bottom: 16px; }
+    .fcard h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .fcard p { font-size: .9rem; color: #475569; line-height: 1.6; }
+    .slabel { display: inline-flex; align-items: center; padding: 6px 18px; border-radius: 999px; background: rgba(42,82,216,.1); color: var(--azure); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 20px; }
+    .sh2 { font-size: clamp(1.8rem,4vw,3rem); font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
+    .ssub { font-size: 1.05rem; color: #64748b; max-width: 52ch; line-height: 1.65; margin-top: 14px; }
+    .cta-band { background: linear-gradient(135deg,#1a3a8a 0%,#06121f 60%,#0a2040 100%); padding: 96px var(--gutter); text-align: center; }
+    .cta-band h2 { font-size: clamp(2rem,4vw,3.2rem); font-weight: 700; margin-bottom: 20px; }
+    .cta-band p { color: rgba(255,255,255,.72); font-size: 1.1rem; margin-bottom: 40px; max-width: 46ch; margin-inline: auto; }
+    footer { background: #040d16; padding: 40px var(--gutter); text-align: center; font-size: .85rem; color: rgba(255,255,255,.35); }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media(max-width:600px){.hero-copy{padding-top:120px;padding-bottom:96px}.btn-primary{padding:12px 28px;font-size:1rem}}
+  </style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="loader-fish">🐠</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-label">Diving into the reef…</div>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="nav-logo"><span>🐟</span><span>Magic Reef</span></a>
+    <nav class="nav-pill">
+      <a href="#hero" class="active">Home</a>
+      <a href="#features">Features</a>
+      <a href="#experience">Experience</a>
+      <a href="#cta" class="nav-cta">Dive In</a>
+    </nav>
+    <div class="nav-right"><a href="#cta" class="btn-outline">Get Started</a></div>
+  </div>
+</header>
+
+<!-- STICKY 3D CANVAS -->
+<div class="hero-canvas-wrap" aria-hidden="true">
+  <div id="reefCanvas3d" style="position:absolute;inset:0;width:100%;height:100%;"></div>
+</div>
+
+<!-- HERO COPY (scrolls over sticky canvas) -->
+<section class="hero-section" id="hero">
+  <div class="hero-copy">
+    <p class="hero-eyebrow">A living 3D underwater world</p>
+    <h1 class="hero-h1">Dive into the<br><strong>living reef.</strong></h1>
+    <p class="hero-sub">Watch fish swim, corals sway, and sunbeams dance through the water. Click anywhere to feed the fish and see them respond.</p>
+    <div class="hero-actions">
+      <a href="#features" class="btn-primary">Explore the Reef <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+      <a href="#experience" class="btn-ghost"><span>🐠</span> Watch it swim</a>
+    </div>
+  </div>
+  <button class="scroll-cue" onclick="document.getElementById('after-hero').scrollIntoView({behavior:'smooth'})" aria-label="Scroll down">
+    <svg viewBox="0 0 32 13" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" aria-hidden="true"><path d="M2 2.5 L16 10.5 L30 2.5"/></svg>
+  </button>
+  <div class="click-hint" aria-hidden="true"><span class="dot"></span><span>Click to feed the fish</span></div>
+</section>
+
+<div id="after-hero" style="position:relative;background:#06121f;">
+
+  <!-- wave divider into azure -->
+  <div class="wave-divider" style="background:var(--azure);">
+    <svg viewBox="0 0 2880 140" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#06121f" d="M0,25 C180,25 180,110 360,110 C540,110 540,40 720,40 C900,40 900,100 1080,100 C1260,100 1260,25 1440,25 C1620,25 1620,110 1800,110 C1980,110 1980,40 2160,40 C2340,40 2340,100 2520,100 C2700,100 2700,25 2880,25 L2880,140 L0,140 Z"/>
+    </svg>
+  </div>
+
+  <!-- MARQUEE -->
+  <section class="marquee-section">
+    <div style="position:absolute;inset-x:0;top:0;height:90px;transform:translateY(calc(-100% + 1px));overflow:hidden;pointer-events:none;">
+      <svg viewBox="0 0 2880 140" preserveAspectRatio="none" style="height:100%;width:200%;animation:waveFlow 12s linear infinite;" aria-hidden="true">
+        <path fill="#2a52d8" d="M0,25 C180,25 180,110 360,110 C540,110 540,40 720,40 C900,40 900,100 1080,100 C1260,100 1260,25 1440,25 C1620,25 1620,110 1800,110 C1980,110 1980,40 2160,40 C2340,40 2340,100 2520,100 C2700,100 2700,25 2880,25 L2880,140 L0,140 Z"/>
+      </svg>
+    </div>
+    <div class="marquee-track" aria-hidden="true">
+      <span class="mpill pw">🐠 Clownfish</span><span class="mpill pp">🐡 Pufferfish</span><span class="mpill pb">🌺 Coral Reef</span><span class="mpill pm">✨ Godrays</span><span class="mpill pg">🌿 Kelp Forest</span><span class="mpill pw">🚢 Shipwreck</span><span class="mpill pp">🫧 Bubbles</span><span class="mpill pb">⭐ Starfish</span><span class="mpill pm">🌊 3D Ocean</span><span class="mpill pg">🎮 Interactive</span>
+      <span class="mpill pw">🐠 Clownfish</span><span class="mpill pp">🐡 Pufferfish</span><span class="mpill pb">🌺 Coral Reef</span><span class="mpill pm">✨ Godrays</span><span class="mpill pg">🌿 Kelp Forest</span><span class="mpill pw">🚢 Shipwreck</span><span class="mpill pp">🫧 Bubbles</span><span class="mpill pb">⭐ Starfish</span><span class="mpill pm">🌊 3D Ocean</span><span class="mpill pg">🎮 Interactive</span>
+    </div>
+    <div class="marquee-track rev" aria-hidden="true">
+      <span class="mpill pw">Magical</span><span class="mpill pp">Beautiful</span><span class="mpill pb">Immersive</span><span class="mpill pm">Relaxing</span><span class="mpill pg">Stunning</span><span class="mpill pw">Living</span><span class="mpill pp">Breathing</span><span class="mpill pb">3D World</span><span class="mpill pm">Fish Tank</span><span class="mpill pg">WebGL</span>
+      <span class="mpill pw">Magical</span><span class="mpill pp">Beautiful</span><span class="mpill pb">Immersive</span><span class="mpill pm">Relaxing</span><span class="mpill pg">Stunning</span><span class="mpill pw">Living</span><span class="mpill pp">Breathing</span><span class="mpill pb">3D World</span><span class="mpill pm">Fish Tank</span><span class="mpill pg">WebGL</span>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="sec-white sp" id="features">
+    <div class="container">
+      <div class="reveal">
+        <span class="slabel">🌊 The Experience</span>
+        <h2 class="sh2">Everything a living reef should be</h2>
+        <p class="ssub">Every detail hand-crafted to feel like a real underwater world — right in your browser.</p>
+      </div>
+      <div class="features-grid">
+        <div class="fcard reveal"><div class="fcard-icon">🐠</div><h3>10 Fish Species</h3><p>Clownfish, Angelfish, Jellyfish, Grouper and more — each with unique tail-waving shader animation.</p></div>
+        <div class="fcard reveal"><div class="fcard-icon">🚢</div><h3>Sunken Shipwreck</h3><p>An ancient pirate ship rests on the seafloor, surrounded by swaying kelp and coral formations.</p></div>
+        <div class="fcard reveal"><div class="fcard-icon">✨</div><h3>Pulsing Godrays</h3><p>Dual-layer sun beams filter through the water surface with realistic additive blending glow.</p></div>
+        <div class="fcard reveal"><div class="fcard-icon">🎮</div><h3>Click to Feed</h3><p>Tap anywhere to drop food pellets. Fish detect them, swim over, and eat them in real time.</p></div>
+        <div class="fcard reveal"><div class="fcard-icon">🖱️</div><h3>3D Mouse Parallax</h3><p>Move your cursor to shift the entire underwater scene in full 3D perspective depth.</p></div>
+        <div class="fcard reveal"><div class="fcard-icon">🫧</div><h3>Rising Bubbles</h3><p>45 animated bubble particles rise from six emitter points with natural wobble physics.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REEF LAYERS -->
+  <section class="sec-dark sp" id="experience">
+    <div class="container">
+      <div class="reveal" style="text-align:center;margin-bottom:56px;">
+        <span class="slabel" style="background:rgba(0,212,232,.15);color:#00d4e8;">🌿 The Reef</span>
+        <h2 class="sh2">17 layers of coral, seaweed &amp; rock</h2>
+        <p class="ssub" style="color:rgba(255,255,255,.65);margin:14px auto 0;">Each layer sways independently with authentic GLSL vertex shaders — foreground faster, background slow and peaceful.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;">
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 20px;text-align:center;"><div style="font-size:2rem;margin-bottom:12px;">🌿</div><h4 style="font-size:.95rem;font-weight:700;margin-bottom:6px;">Kelp Forest</h4><p style="font-size:.82rem;color:rgba(255,255,255,.55);">Tall swaying kelp clusters with depth-correct layering</p></div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 20px;text-align:center;"><div style="font-size:2rem;margin-bottom:12px;">🪸</div><h4 style="font-size:.95rem;font-weight:700;margin-bottom:6px;">Coral Formations</h4><p style="font-size:.82rem;color:rgba(255,255,255,.55);">Purple tube corals, orange staghorns, blue branching</p></div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 20px;text-align:center;"><div style="font-size:2rem;margin-bottom:12px;">⭐</div><h4 style="font-size:.95rem;font-weight:700;margin-bottom:6px;">Starfish</h4><p style="font-size:.82rem;color:rgba(255,255,255,.55);">Vibrant orange starfish scattered across the sandy floor</p></div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px 20px;text-align:center;"><div style="font-size:2rem;margin-bottom:12px;">🚢</div><h4 style="font-size:.95rem;font-weight:700;margin-bottom:6px;">Pirate Shipwreck</h4><p style="font-size:.82rem;color:rgba(255,255,255,.55);">The iconic sunken ship landmark in the midground</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band" id="cta">
+    <h2>Ready to dive in?</h2>
+    <p>Experience the most immersive living reef animation. No app, no download — just pure aquarium magic.</p>
+    <a href="#hero" class="btn-primary" style="display:inline-flex;font-size:1.1rem;padding:16px 44px;">🐠 Dive In Now</a>
+  </section>
+
+  <footer><p>© 2026 Magic Reef Demo &nbsp;·&nbsp; Interactive 3D Aquarium &nbsp;·&nbsp; Powered by Three.js WebGL</p></footer>
+</div>
+
+<script src="js/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const DC=[
+  {url:'textures/fishtank/bg_far_pale_blue_reef_wide.webp',pos:[0,-9.4,-16],w:22,sw:0.003,fl:false},
+  {url:'textures/fishtank/bg_mid_blue_reef_strip.webp',pos:[7.5,-9.5,-12.5],w:14,sw:0.005,fl:true},
+  {url:'textures/fishtank/underwater_coral_reef_scene_with_starfish.webp',pos:[-3.5,-9.5,-11.5],w:14,sw:0.005,fl:false},
+  {url:'textures/fishtank/bg_pale_reef_rocks.webp',pos:[-8.5,-9.5,-10.5],w:12,sw:0.006,fl:false},
+  {url:'textures/fishtank/ship.webp',pos:[3.5,-6.5,-5],w:13.5,sw:0.003,fl:false},
+  {url:'textures/fishtank/bg_kelp_rocks_tall.webp',pos:[5.5,-9.5,-8.5],w:8,sw:0.025,fl:false},
+  {url:'textures/fishtank/underwater_kelp_cluster_illustration.webp',pos:[-6.5,-9.6,-6],w:6.5,sw:0.045,fl:true},
+  {url:'textures/fishtank/underwater_kelp_cluster_with_rocks.webp',pos:[4,-9.7,-4],w:5.5,sw:0.04,fl:false},
+  {url:'textures/fishtank/mid_green_kelp_blue_coral_rocks.webp',pos:[-3.5,-9.6,-4.5],w:6.5,sw:0.035,fl:false},
+  {url:'textures/fishtank/fg_mixed_purple_tubes_green_kelp_wide.webp',pos:[-11.5,-9.8,1],w:13,sw:0.02,fl:false},
+  {url:'textures/fishtank/fg_purple_tubes_green_kelp_blue_coral.webp',pos:[11.2,-9.7,0.8],w:13,sw:0.02,fl:false},
+  {url:'textures/fishtank/fg_orange_coral_rocks.webp',pos:[-6.4,-9.6,2.4],w:6.5,sw:0.015,fl:false},
+  {url:'textures/fishtank/fg_purple_tube_coral_cluster.webp',pos:[7.5,-9.6,2.4],w:7,sw:0.015,fl:true},
+  {url:'textures/fishtank/underwater_rocks_with_seaweed_clusters.webp',pos:[4.5,-9.9,2.4],w:5.5,sw:0.015,fl:true},
+  {url:'textures/fishtank/underwater_rock_formation_with_starfish.webp',pos:[-3,-9.9,2.8],w:6,sw:0.008,fl:false},
+  {url:'textures/fishtank/stylized_orange_starfish_illustration.webp',pos:[1.5,-10.2,4],w:2.4,sw:0.002,fl:false},
+  {url:'textures/fishtank/stylized_orange_starfish_illustration.webp',pos:[-7,-10.3,3.2],w:1.8,sw:0.002,fl:false},
+];
+const FC=[
+  {url:'outlines/clownfish.webp',l:3.4,h:2.2,sp:1.4,y:1.5,z:2.0,d:1},
+  {url:'outlines/damselfish.webp',l:2.6,h:1.8,sp:1.8,y:3.2,z:-1.0,d:-1},
+  {url:'outlines/goldfish.webp',l:3.0,h:2.0,sp:1.3,y:-0.5,z:1.2,d:1},
+  {url:'outlines/butterflyfish.webp',l:2.8,h:2.2,sp:1.6,y:-2.5,z:-2.0,d:-1},
+  {url:'outlines/cowfish.webp',l:3.2,h:2.4,sp:1.1,y:0.2,z:3.0,d:1},
+  {url:'outlines/angelfish.webp',l:3.2,h:3.0,sp:1.5,y:2.0,z:-3.5,d:-1},
+  {url:'outlines/bettafish.webp',l:3.6,h:2.6,sp:1.2,y:-1.2,z:0.5,d:1},
+  {url:'outlines/discusfish.webp',l:3.2,h:2.8,sp:1.4,y:4.0,z:-4.5,d:1},
+  {url:'outlines/jellyfish.webp',l:2.4,h:3.2,sp:0.8,y:-3.5,z:2.2,d:-1},
+  {url:'outlines/grouper.webp',l:4.0,h:2.6,sp:1.0,y:-4.5,z:-1.5,d:1},
+];
+
+class MagicReef {
+  constructor(id){
+    this.el=document.getElementById(id);
+    if(!this.el||!window.THREE)return;
+    this.decors=[];this.fish=[];this.bubbles=[];this.pellets=[];this.rays=[];
+    this.mouse={x:0,y:0,tx:0,ty:0};
+    this.clock=new THREE.Clock();
+    this.tl=new THREE.TextureLoader();
+    this.total=DC.length+FC.length+2;
+    this.done=0;
+    this._scene();this._rays();this._decors();this._fish();this._bubbles();this._events();this._loop();
+  }
+  _scene(){
+    this.scene=new THREE.Scene();
+    this.scene.fog=new THREE.FogExp2(0x092645,0.022);
+    this.scene.background=new THREE.Color(0x092645);
+    const w=this.el.clientWidth,h=this.el.clientHeight;
+    this.cam=new THREE.PerspectiveCamera(50,w/h,0.1,100);
+    this.cam.position.set(0,-1,16);this.cam.lookAt(0,-2,0);
+    this.ren=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+    this.ren.setSize(w,h);this.ren.setPixelRatio(Math.min(devicePixelRatio,2));
+    this.ren.outputEncoding=THREE.sRGBEncoding;
+    this.el.appendChild(this.ren.domElement);
+    this.scene.add(new THREE.AmbientLight(0xffffff,1.6));
+    const s=new THREE.DirectionalLight(0xdff4ff,1.2);s.position.set(5,20,10);this.scene.add(s);
+  }
+  _tick(){
+    this.done++;
+    const pct=Math.round(this.done/this.total*100);
+    const b=document.getElementById('loaderBar');if(b)b.style.width=pct+'%';
+    if(this.done>=this.total)setTimeout(()=>{const p=document.getElementById('preloader');if(p)p.classList.add('hidden');},500);
+  }
+  _rays(){
+    const mk=(u,pos,sc,op)=>{this.tl.load(u,t=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;const m=new THREE.Mesh(new THREE.PlaneGeometry(16,28),new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:op,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,depthWrite:false}));m.position.set(...pos);m.scale.set(sc[0],sc[1],1);this.scene.add(m);this.rays.push(m);this._tick();});};
+    mk('textures/godrays_outer.jpg',[0,3,-1],[2.2,1.4],0.22);
+    mk('textures/godrays_inner.jpg',[1,4,1],[1.8,1.3],0.30);
+  }
+  _decors(){
+    DC.forEach(c=>{this.tl.load(c.url,t=>{
+      const ar=t.image.height/t.image.width,h=c.w*ar;
+      const g=new THREE.PlaneGeometry(c.w,h,16,8);
+      if(c.fl){const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setX(i,1-uv.getX(i));uv.needsUpdate=true;}
+      const mat=new THREE.MeshBasicMaterial({map:t,transparent:true,side:THREE.DoubleSide,depthWrite:false});
+      mat.onBeforeCompile=sh=>{
+        sh.uniforms.uT={value:0};sh.uniforms.uS={value:c.sw};sh.uniforms.uH={value:h};
+        sh.vertexShader=`uniform float uT,uS,uH;\n${sh.vertexShader}`.replace('#include <begin_vertex>',`#include <begin_vertex>\nfloat f=clamp((position.y+uH*.5)/uH,0.,1.);\ntransformed.x+=sin(uT*1.5+position.x*.3+position.z*.2)*uS*f*10.;\ntransformed.y+=cos(uT*1.2+position.x*.4)*uS*f*2.;`);
+        mat.userData.sh=sh;
+      };
+      const mesh=new THREE.Mesh(g,mat);mesh.position.set(c.pos[0],c.pos[1]+h*.45,c.pos[2]);
+      this.scene.add(mesh);this.decors.push(mesh);this._tick();
+    });});
+  }
+  _fish(){
+    FC.forEach(c=>{this.tl.load(c.url,t=>{
+      const g=new THREE.PlaneGeometry(c.l,c.h,24,1);
+      const mat=new THREE.MeshBasicMaterial({map:t,transparent:true,side:THREE.DoubleSide,depthWrite:false});
+      mat.onBeforeCompile=sh=>{
+        sh.uniforms.uT={value:0};sh.uniforms.uL={value:c.l};sh.uniforms.uF={value:1.2};sh.uniforms.uSp={value:6.0};sh.uniforms.uA={value:0.055};sh.uniforms.uP={value:Math.random()*Math.PI*2};
+        sh.vertexShader=`uniform float uT,uL,uF,uSp,uA,uP;\n${sh.vertexShader}`.replace('#include <begin_vertex>',`#include <begin_vertex>\nfloat wN=clamp(.5-transformed.x/uL,0.,1.);\nfloat amp=uA*smoothstep(.08,.8,wN)*uL;\nfloat w=sin(wN*uF*6.2831853-uT*uSp+uP)*amp;\ntransformed.y+=w*.8;\ntransformed.z+=w*.6;`);
+        mat.userData.sh=sh;
+      };
+      const mesh=new THREE.Mesh(g,mat);mesh.position.set((Math.random()-.5)*18,c.y,c.z);
+      const a={mesh,dir:c.d,speed:c.sp*(0.85+Math.random()*.3),baseY:c.y,bob:Math.random()*Math.PI*2};
+      this._ori(a);this.scene.add(mesh);this.fish.push(a);this._tick();
+    });});
+  }
+  _ori(f){f.mesh.rotation.y=f.dir>0?0:Math.PI;}
+  _bubbles(){
+    const g=new THREE.SphereGeometry(.12,12,12),ex=[-10,-4,1,6,12,-7];
+    for(let i=0;i<45;i++){
+      const ox=ex[i%ex.length]+(Math.random()-.5)*2;
+      const m=new THREE.MeshBasicMaterial({color:0xdff4ff,transparent:true,opacity:.55,blending:THREE.AdditiveBlending});
+      const b=new THREE.Mesh(g,m),sc=.4+Math.random()*.9;
+      b.scale.setScalar(sc);b.position.set(ox,-10+Math.random()*18,(Math.random()-.5)*10);
+      b.userData={ox,sp:(0.8+Math.random())*1.5,ws:2+Math.random()*3,wa:.2+Math.random()*.4,ph:Math.random()*Math.PI*2};
+      this.scene.add(b);this.bubbles.push(b);
+    }
+  }
+  _events(){
+    window.addEventListener('resize',()=>{const w=this.el.clientWidth,h=this.el.clientHeight;this.cam.aspect=w/h;this.cam.updateProjectionMatrix();this.ren.setSize(w,h);});
+    window.addEventListener('pointermove',e=>{this.mouse.tx=((e.clientX/innerWidth)*2-1)*1.6;this.mouse.ty=(-(e.clientY/innerHeight)*2+1)*.8;});
+    this.el.addEventListener('pointerdown',e=>{
+      const r=this.el.getBoundingClientRect(),nx=((e.clientX-r.left)/r.width)*2-1,ny=-((e.clientY-r.top)/r.height)*2+1;
+      const v=new THREE.Vector3(nx,ny,.5).unproject(this.cam),d=v.sub(this.cam.position).normalize();
+      const t=-this.cam.position.z/d.z,sp=this.cam.position.clone().add(d.multiplyScalar(t));
+      for(let i=0;i<5;i++)this._pellet(sp.x+(Math.random()-.5)*1.8,sp.y+(Math.random()-.5)*1,(Math.random()-.5)*4);
+    });
+  }
+  _pellet(x,y,z){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.14,10,10),new THREE.MeshBasicMaterial({color:0xf59e0b,transparent:true,opacity:.95}));
+    m.position.set(x,y,z);m.userData={vy:-(Math.random()*1.2+1.5),eaten:false};
+    this.scene.add(m);this.pellets.push(m);
+  }
+  _loop(){
+    requestAnimationFrame(()=>this._loop());
+    const dt=this.clock.getDelta(),t=this.clock.getElapsedTime();
+    this.mouse.x+=(this.mouse.tx-this.mouse.x)*.05;this.mouse.y+=(this.mouse.ty-this.mouse.y)*.05;
+    this.cam.position.x=this.mouse.x;this.cam.position.y=-1+this.mouse.y;this.cam.lookAt(0,-1.5,0);
+    if(this.rays[0]){this.rays[0].material.opacity=.20+Math.sin(t*.8)*.06;this.rays[0].rotation.z=Math.sin(t*.2)*.05;}
+    if(this.rays[1]){this.rays[1].material.opacity=.28+Math.cos(t*1.1)*.08;this.rays[1].rotation.z=-Math.cos(t*.25)*.06;}
+    this.decors.forEach(d=>{if(d.material?.userData?.sh)d.material.userData.sh.uniforms.uT.value=t;});
+    for(let i=this.pellets.length-1;i>=0;i--){const p=this.pellets[i];p.position.y+=p.userData.vy*dt;if(p.position.y<-10||p.userData.eaten){this.scene.remove(p);this.pellets.splice(i,1);}}
+    this.fish.forEach(f=>{
+      if(f.mesh.material?.userData?.sh)f.mesh.material.userData.sh.uniforms.uT.value=t;
+      let nf=null,md=12;
+      for(const p of this.pellets){if(p.userData.eaten)continue;const d=f.mesh.position.distanceTo(p.position);if(d<md){md=d;nf=p;}}
+      if(nf){const dir=nf.position.clone().sub(f.mesh.position).normalize();f.mesh.position.addScaledVector(dir,f.speed*2.2*dt);f.dir=dir.x>=0?1:-1;this._ori(f);if(md<.6)nf.userData.eaten=true;}
+      else{f.bob+=dt*1.8;f.mesh.position.x+=f.dir*f.speed*dt;f.mesh.position.y=f.baseY+Math.sin(f.bob)*.35;const bx=14;if(f.mesh.position.x>bx&&f.dir>0){f.dir=-1;this._ori(f);}if(f.mesh.position.x<-bx&&f.dir<0){f.dir=1;this._ori(f);}}
+    });
+    this.bubbles.forEach(b=>{b.position.y+=b.userData.sp*dt;b.userData.ph+=b.userData.ws*dt;b.position.x=b.userData.ox+Math.sin(b.userData.ph)*b.userData.wa;if(b.position.y>8){b.position.y=-10;b.position.x=b.userData.ox;}});
+    this.ren.render(this.scene,this.cam);
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(window.THREE){new MagicReef('reefCanvas3d');}
+  else{console.error('Three.js failed to load');const p=document.getElementById('preloader');if(p)p.classList.add('hidden');}
+});
+})();
+</script>
+<script>
+const io=new IntersectionObserver(es=>es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
