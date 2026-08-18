@@ -996,11 +996,11 @@
       margin-bottom: 12px;
     }
 
-    /* Scroll To Top Button */
+    /* Scroll To Top Button (positioned so it does not overlap with WhatsApp widget) */
     .scroll-top-btn {
       position: fixed;
       bottom: 24px;
-      right: 20px;
+      left: 20px;
       width: 42px;
       height: 42px;
       border-radius: 50%;
@@ -1721,13 +1721,20 @@
     </div>
   </footer>
 
-  <!-- Scroll to Top Button -->
+  <!-- Scroll to Top Button (Left side to avoid WhatsApp widget collision) -->
   <button class="scroll-top-btn" id="scrollTopBtn" title="Scroll to top" aria-label="Scroll to top">
     ↑
   </button>
 
   <!-- ==========================================================================
-       11. INTERACTIVE JS ENGINE
+       11. ELFSIGHT WHATSAPP INTEGRATED CHAT WIDGET
+       ========================================================================== -->
+  <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
+  <script src="https://elfsightcdn.com/platform.js" async></script>
+  <div class="elfsight-app-8905bb16-d1dc-492b-b72f-e733ff28ba76" data-elfsight-app-lazy></div>
+
+  <!-- ==========================================================================
+       12. INTERACTIVE JS ENGINE
        ========================================================================== -->
   <script>
     (function () {
